@@ -1,0 +1,143 @@
+import random
+
+# HANGMAN GAME
+WORDS = [
+    "python", "github", "coding", "keyboard", "program",
+    "variable", "function", "developer", "internet", "laptop"
+]
+
+HANGMAN_PICS = [
+    """
+      +---+
+
+      |   |
+          |
+          |
+          |
+          |
+    =========
+    """,
+    """
+      +---+
+
+      |   |
+      O   |
+          |
+          |
+          |
+    =========
+    """,
+    """
+      +---+
+
+      |   |
+      O   |
+
+      |   |
+          |
+          |
+    =========
+    """,
+    """
+      +---+
+
+      |   |
+      O   |
+     /|   |
+          |
+          |
+    =========
+    """,
+    """
+      +---+
+
+      |   |
+      O   |
+     /|\\  |
+          |
+          |
+    =========
+    """,
+    """
+      +---+
+
+      |   |
+      O   |
+     /|\\  |
+     /    |
+          |
+    =========
+    """,
+    """
+      +---+
+
+      |   |
+      O   |
+     /|\\  |
+     / \\  |
+          |
+    =========
+    """
+]
+
+MAX_LIVES = len(HANGMAN_PICS) - 1
+
+
+def play_round():
+    word = random.choice(WORDS)
+    guessed = set()
+    lives = MAX_LIVES
+
+    while lives > 0:
+        # Print the current hangman stage based on lost lives
+        print(HANGMAN_PICS[MAX_LIVES - lives])
+
+        # Show the word with blanks for letters not guessed yet
+        display = " ".join(ch if ch in guessed else "_" for ch in word)
+        print(f"Word: {display}")
+        print(f"Lives: {'❤️ ' * lives}({lives} left)")
+
+        if guessed:
+            print(f"Guessed so far: {', '.join(sorted(guessed))}")
+
+        # Win check
+        if all(ch in guessed for ch in word):
+            print("\n🤩 YOU WON! You saved the man!")
+            return
+
+        guess = input("\nGuess a letter: ").strip().lower()
+
+        # Validate input
+        if len(guess) != 1 or not guess.isalpha():
+            print("⚠️ Please enter a single letter!")
+            continue
+
+        if guess in guessed:
+            print("⚠️ You already guessed that letter!")
+            continue
+
+        guessed.add(guess)
+
+        if guess in word:
+            print("✅ Good guess!")
+        else:
+            lives -= 1
+            print("😞 Wrong guess!")
+
+    # Show the final completed hangman on game over
+    print(HANGMAN_PICS[-1])
+    print("💀 GAME OVER, you ran out of lives.")
+    print(f"The word was: {word}")
+
+
+if __name__ == "__main__":
+    print(20 * "=")
+    print("HANGMAN GAME")
+    print(20 * "=")
+
+    while True:
+        play_round()
+        again = input("\nPlay again? (y/n): ").strip().lower()
+        if again != "y":
+            print("Thanks for playing! 👋")
+            break
